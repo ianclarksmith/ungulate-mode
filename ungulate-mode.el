@@ -26,4 +26,9 @@
             (define-key map (kbd "C-c C-c") 'ungulate-eval-buffer)
             map))
 
+(defun ungulate-bring-rhino-to-front ()
+  "Bring Rhinoceros to front (OS X only)."
+  (interactive)
+  (start-process "" nil "open" ungulate-rhino-path))
+
 (provide 'ungulate-mode)
