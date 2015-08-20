@@ -6,6 +6,8 @@
 
 (defvar ungulate-http-host "localhost")
 
+(defvar ungulate-rhino-path nil)
+
 (defun ungulate-eval-buffer ()
   (interactive)
   (let* ((temp-file (make-temp-file "rhinoscript" nil ".py")))
@@ -25,6 +27,15 @@
   :keymap (let ((map (make-sparse-keymap)))
             (define-key map (kbd "C-c C-c") 'ungulate-eval-buffer)
             map))
+
+(defun ungulate-rhino-is-listening ()
+  (request (format "http://%s:%s/ping" ungulate-http-host ungulate-http-port)
+           :parser 'json-read
+           :success (function*
+                     (lambda (&key data &allow-other-keys)
+                       (setq ungulate-rhino-path (assoc-default 'msg data))
+                       (message "%s" data)))
+           :error (message "Rhino is not listening.")))
 
 (defun ungulate-bring-rhino-to-front ()
   "Bring Rhinoceros to front (OS X only)."
