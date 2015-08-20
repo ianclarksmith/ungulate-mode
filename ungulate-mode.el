@@ -1,11 +1,18 @@
 (require 'request)
 (require 'json)
 
+(defvar ungulate-http-port 8080
+  "HTTP port which Rhino is listening on")
+
+(defvar ungulate-http-host "localhost")
+
 (defun ungulate-eval-buffer ()
   (interactive)
   (let* ((temp-file (make-temp-file "rhinoscript" nil ".py")))
     (write-region nil nil temp-file)
-    (request "http://localhost:8080/runpythonscriptfile"
+    (request (format "http://%s:%s/runpythonscriptfile"
+                     ungulate-http-host
+                     ungulate-http-port)
              :type "POST"
              :data (json-encode `(("FileName" . ,temp-file)))
              :success (function*
