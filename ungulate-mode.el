@@ -2,11 +2,14 @@
 (require 'json)
 
 (defvar ungulate-http-port 8080
-  "HTTP port which Rhino is listening on")
+  "HTTP port which Rhino is listening on.")
 
-(defvar ungulate-http-host "localhost")
+(defvar ungulate-http-host "localhost"
+  "HTTP host which Rhino is listening on.")
 
-(defvar ungulate-rhino-path nil)
+(defvar ungulate-rhino-path nil
+  "Path to Rhinoceros.
+Set whenever `ungulate-rhino-is-listening' is run.")
 
 (defun ungulate-eval-buffer ()
   (interactive)
