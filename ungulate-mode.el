@@ -11,6 +11,9 @@
   "Path to Rhinoceros.
 Set whenever `ungulate-rhino-is-listening' is run.")
 
+(defvar ungulate-foreground-on-eval-p t
+  "Bring Rhino to foreground unless nil.")
+
 (defun ungulate--rhino-endpoint (method)
   "Convenience function for assembling a request endpoint."
   (format "http://%s:%s/%s" ungulate-http-host ungulate-http-port method))
@@ -26,7 +29,9 @@ To do this, the buffer is saved as a temporary file with a .py extension and sen
              :data (json-encode `(("FileName" . ,temp-file)))
              :success (function*
                        (lambda (&key data &allow-other-keys)
-                         (message "Buffer sent to Rhino successfully."))))))
+                         (message "Buffer sent to Rhino successfully.")
+                         (if ungulate-foreground-on-eval-p
+                             (ungulate-bring-rhino-to-front)))))))
 
 (define-minor-mode ungulate-mode
   "Why shave yaks when you can pet rhinos?"
