@@ -11,15 +11,17 @@
   "Path to Rhinoceros.
 Set whenever `ungulate-rhino-is-listening' is run.")
 
+(defun ungulate--rhino-endpoint (method)
+  "Convenience function for assembling a request endpoint."
+  (format "http://%s:%s/%s" ungulate-http-host ungulate-http-port method))
+
 (defun ungulate-eval-buffer ()
   "Evaluate the contents of the current buffer in Rhino.
 To do this, the buffer is saved as a temporary file with a .py extension and sent to Rhino to run as a Python script."
   (interactive)
   (let* ((temp-file (make-temp-file "rhinoscript" nil ".py")))
     (write-region nil nil temp-file)
-    (request (format "http://%s:%s/runpythonscriptfile"
-                     ungulate-http-host
-                     ungulate-http-port)
+    (request (ungulate--rhino-endpoint "runpythonscriptfile")
              :type "POST"
              :data (json-encode `(("FileName" . ,temp-file)))
              :success (function*
@@ -34,7 +36,7 @@ To do this, the buffer is saved as a temporary file with a .py extension and sen
             map))
 
 (defun ungulate-rhino-is-listening ()
-  (request (format "http://%s:%s/ping" ungulate-http-host ungulate-http-port)
+  (request (ungulate--rhino-endpoint "ping")
            :parser 'json-read
            :success (function*
                      (lambda (&key data &allow-other-keys)
