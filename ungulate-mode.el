@@ -69,6 +69,7 @@ sent to Rhino to run as a Python script."
             map))
 
 (defun ungulate-rhino-is-listening ()
+  (interactive)
   (request (ungulate--rhino-endpoint "ping")
            :parser 'json-read
            :success (function*
@@ -80,7 +81,9 @@ sent to Rhino to run as a Python script."
 (defun ungulate-bring-rhino-to-front ()
   "Bring Rhinoceros to front (OS X only)."
   (interactive)
-  (start-process "" nil "open" ungulate-rhino-path))
+  (if ungulate-rhino-path
+      (start-process "" nil "open" ungulate-rhino-path))
+  (message "Please set ungulate-rhino-path or run `ungulate-rhino-is-listening'"))
 
 (provide 'ungulate-mode)
 ;;; ungulate-mode.el ends here
